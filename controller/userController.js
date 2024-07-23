@@ -138,8 +138,8 @@ const deleteUser = async (req, res) => {
         new Promise((resolve, reject) => {
             con.query(deleteUser, (err, result) => {
                 if (err) {
-                    reject(err);
-                    // res.send("not deleted");
+                    res.send("not deleted");
+                    reject(err); 
                 } else {
                     resolve(result);
                     res.send({ status: 400, message: "User is deleted" })
@@ -168,6 +168,7 @@ const updateUser = async (req, res) => {
         new Promise((resolve, reject) => {
             con.query(q, payload.first_name, (err, result) => {
                 if (err) {
+                    res.send("not updated");
                     reject(err);
                 } else {
                     resolve(result);
