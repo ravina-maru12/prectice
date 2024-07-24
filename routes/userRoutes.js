@@ -7,7 +7,7 @@ router.get("/test", userController.test);
 router.post("/register", userController.register);    //for register the user
 router.get("/view", verifyUser, authorizeRole(['0', '1', '2', '3']), userController.viewUser);
 router.delete("/delete", verifyUser, authorizeRole(['3']), userController.deleteUser);
-router.patch("/update", verifyUser,authorizeRole([ '2', '3']), userController.updateUser);
+router.patch("/update", verifyUser,authorizeRole(['2', '3' ]), userController.updateUser);
 router.post("/login", userController.login);
 router.post("/logout", verifyUser, userController.logout);
 router.get("/home", userController.selectFile);

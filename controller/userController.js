@@ -3,11 +3,13 @@ const bcrypt = require("bcrypt");
 const generateToken = require("../middlewear/generateToken");
 const multer = require("multer");
 const { upload } = require("../middlewear/auth");
+const { success } = require("../middlewear/response");
 
 const test = (req, res) => {
     // console.log("app is running");
     // console.log(req.user);
-    res.send({ message: "App is working" });
+    // res.send({ message: "App is working" });
+    return success(req, res, "working", "data");
 }
 
 //insert
@@ -37,13 +39,15 @@ const register = async (req, res) => {
             // console.log(hashPassword);
             const { first_name, last_name, city, phone, email, password, gender, role } = req.body;
             const registerUser = `INSERT INTO user(first_name, last_name, city, phone, email, password, gender, role) VALUES(?,?,?,?,?,?,?,?)`;
-            con.query(registerUser, [first_name, last_name, city, phone, email, hashPassword, gender, role], (err, result) => {
+             const data = con.query(registerUser, [first_name, last_name, city, phone, email, hashPassword, gender, role], (err, result) => {
                 if (err) throw err;
                 // console.log(result);
                 if (result.affectedRows == 0) {
                     res.status(400).send({ "status": 400, "message": "Data not inserted " });
+                    
                 } else {
-                    res.status(200).send({ "status": 200, "message": "Data inserted successfully" });
+                    // res.status(200).send({ "status": 200, "message": "Data inserted successfully" });
+                    return success(req, res, "Data inserted successfully", data.values);
                 }
             });
         }
@@ -235,7 +239,7 @@ module.exports = {
     logout,
     selectFile,
     singleFileUpload,
-    uploadMultipleFile,
+    uploadMultipleFile
 }
 
 // const login = async (req, res) => {
