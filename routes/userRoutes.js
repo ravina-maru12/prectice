@@ -1,4 +1,4 @@
-const multer = require("multer");
+// const multer = require("multer");
 const userController = require("../controller/userController");
 const router = require("express").Router();
 const { verifyUser, authorizeRole } = require("../middlewear/auth");

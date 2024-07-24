@@ -73,7 +73,7 @@ const authorizeRole = ([...roles]) => {
         next();
       } else {
         console.log("Can't access");
-        res.send({ status: 400, message: "Access denied" });
+        // res.send({ status: 400, message: "Access denied" });
       }
     }
     // return false;
