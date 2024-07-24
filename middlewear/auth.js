@@ -65,20 +65,33 @@ const upload = multer({ storage: storage });   //image is the filed name
 // Middleware for role-based authorization
 const authorizeRole = ([...roles]) => {
   return (req, res, next) => {
-    // console.log(req.user.role);
     //req.user.role => database role
     for (let role of roles) {
       if (req.user.role === role) {
-        console.log("access the data");
+        console.log("Authorized Person");
         next();
       } else {
-        console.log("Can't access");
+        console.log("Unauthorized user");
         // res.send({ status: 400, message: "Access denied" });
+        res.status(404).json({status: 404, message: "Unauthorized user"});
       }
     }
     // return false;
   }
 }
+
+// function checkRole([...role] ) {
+//   return function(req, res, next) {
+//     // Assuming roles are stored in req.user.roles after authentication
+//     for (let roles of role){
+//       if (req.user.role.includes(role)) {
+//         next(); // User has the role, proceed to the next middleware or route handler
+//       } else {
+//         res.status(403).send('Unauthorized'); // User does not have the role
+//       }
+//     }
+//   }
+// }
 
 module.exports = {
   verifyUser,

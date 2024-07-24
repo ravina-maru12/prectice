@@ -39,7 +39,7 @@ const register = async (req, res) => {
             // console.log(hashPassword);
             const { first_name, last_name, city, phone, email, password, gender, role } = req.body;
             const registerUser = `INSERT INTO user(first_name, last_name, city, phone, email, password, gender, role) VALUES(?,?,?,?,?,?,?,?)`;
-             const data = con.query(registerUser, [first_name, last_name, city, phone, email, hashPassword, gender, role], (err, result) => {
+            const data = con.query(registerUser, [first_name, last_name, city, phone, email, hashPassword, gender, role], (err, result) => {
                 if (err) throw err;
                 // console.log(result);
                 if (result.affectedRows == 0) {
@@ -135,17 +135,19 @@ const viewUser = async (req, res) => {
 //delete
 const deleteUser = async (req, res) => {
     try {
-        const deleteToken = req.user.id;
+        const payload = req.body;
+        // console.log(payload.id);
+        // const deleteToken = req.user.id;
 
-        const deleteUser = `DELETE FROM user where id=${deleteToken}`;
+        const deleteUser = `DELETE FROM user where id=?`;
         new Promise((resolve, reject) => {
-            con.query(deleteUser, (err, result) => {
+            con.query(deleteUser, payload.id, (err, result) => {
                 if (err) {
                     res.send("not deleted");
-                    reject(err); 
+                    reject(err);
                 } else {
                     resolve(result);
-                    res.send({ status: 400, message: "User is deleted" })
+                    res.send({ status: 200, message: "User is deleted" })
                 }
             });
         })
@@ -164,12 +166,12 @@ const updateUser = async (req, res) => {
         // console.log(updatedToken);
 
         // let d = jwt.decode(updatedToken, "abc111");
-        let editData = req.user.id;
+        // let editData = req.user.id;
         // console.log(editData);
-
-        let q = `UPDATE user SET first_name = ? WHERE id = ${editData}`;
+        // return false;
+        let editUser = `UPDATE user SET first_name = ? WHERE email = ?`;
         new Promise((resolve, reject) => {
-            con.query(q, payload.first_name, (err, result) => {
+            con.query(editUser, payload.first_name, payload.email, (err, result) => {
                 if (err) {
                     res.send("not updated");
                     reject(err);
@@ -209,11 +211,11 @@ const selectFile = (req, res) => {
 //     let data = await user;
 //     req.user = data;
 //     // console.log(req.user);
-    
+
 // }
 
-
 //for upload single file using multer
+//for single file upload
 const singleFile = upload.single('image');    //to upload single image
 
 const singleFileUpload = (req, res) => {
@@ -226,7 +228,7 @@ const singleFileUpload = (req, res) => {
     })
 }
 
-//to upload multiple image limit = 5
+//to upload multiple image using multer limit => 5
 const multipleFile = upload.array('files', 5);
 
 const uploadMultipleFile = (req, res) => {
@@ -247,6 +249,26 @@ const uploadMultipleFile = (req, res) => {
 //     }
 // }
 
+const getAllUser = async (req, res) => {
+    try {
+        let userAccess = "SELECT * FROM emp";
+        const data = new Promise((resolve, reject) => {
+            con.query(userAccess, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        })
+        let user = await data;
+        // console.log(user);
+        res.send(user);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports = {
     test,
     register,
@@ -258,6 +280,7 @@ module.exports = {
     selectFile,
     singleFileUpload,
     uploadMultipleFile,
+    getAllUser
 }
 
 // const login = async (req, res) => {
