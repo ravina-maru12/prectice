@@ -119,7 +119,7 @@ const viewUser = async (req, res) => {
                 } else {
                     //if user is active then 1>0 condition is true otherwise false
                     if (result.length > 0) {
-                        resolve(result);
+                        // resolve(result);
                         res.send({ status: 200, message: "User is Active", data: result[0] });
                     } else {
                         res.send({ status: 400, message: "User is not Active" });
@@ -194,6 +194,25 @@ const selectFile = (req, res) => {
     res.render("home.ejs");
 }
 
+// //Roles and permissions
+// const getUser = async (req, res) => {
+//     let selectUser = "SELECT * FROM emp";
+//     const user = new Promise((resolve, reject) => {
+//         con.query(selectUser, (err, result) => {
+//             if(err){
+//                 reject()
+//             }else{
+//                 resolve(result);
+//             }
+//         })
+//     });
+//     let data = await user;
+//     req.user = data;
+//     // console.log(req.user);
+    
+// }
+
+
 //for upload single file using multer
 const singleFile = upload.single('image');    //to upload single image
 
@@ -238,7 +257,7 @@ module.exports = {
     logout,
     selectFile,
     singleFileUpload,
-    uploadMultipleFile
+    uploadMultipleFile,
 }
 
 // const login = async (req, res) => {

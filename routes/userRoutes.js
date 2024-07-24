@@ -13,6 +13,7 @@ router.post("/logout", verifyUser, userController.logout);
 router.get("/home", userController.selectFile);
 router.post("/upload", userController.singleFileUpload);
 router.post("/multipleFile", userController.uploadMultipleFile);
+// router.get("/getAllUser", authorizeRole('user'), userController.getUser);
 // router.get('/admin', verifyUser, authorizeRole('0'), userController.adminAccess);
 
 module.exports = router;
