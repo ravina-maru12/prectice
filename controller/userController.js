@@ -44,7 +44,6 @@ const register = async (req, res) => {
                 // console.log(result);
                 if (result.affectedRows == 0) {
                     res.status(400).send({ "status": 400, "message": "Data not inserted " });
-                    
                 } else {
                     // res.status(200).send({ "status": 200, "message": "Data inserted successfully" });
                     return success(req, res, "Data inserted successfully", data.values);
