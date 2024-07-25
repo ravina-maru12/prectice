@@ -169,9 +169,9 @@ const updateUser = async (req, res) => {
         // let editData = req.user.id;
         // console.log(editData);
         // return false;
-        let editUser = `UPDATE user SET first_name = ? WHERE email = '${req.body.email}'`;
+        let editUser = `UPDATE emp SET name = ? WHERE email = '${req.body.email}'`;
         new Promise((resolve, reject) => {
-            con.query(editUser, payload.first_name, (err, result) => {
+            con.query(editUser, payload.name, (err, result) => {
                 if (err) {
                     res.send("not updated");
                     reject(err);
