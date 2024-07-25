@@ -5,6 +5,7 @@ const { verifyUser, authorizeRole } = require("../middlewear/auth");
 
 router.get("/test", userController.test);
 router.post("/register", userController.register);    //for register the user
+router.post("/registerEmp", userController.registerEmp);
 router.get("/view", verifyUser, userController.viewUser);
 router.delete("/delete", verifyUser, authorizeRole(['2']), userController.deleteUser);
 router.patch("/update", verifyUser,authorizeRole(['1', '2']), userController.updateUser);

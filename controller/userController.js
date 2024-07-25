@@ -56,6 +56,52 @@ const register = async (req, res) => {
     }
 }
 
+//register user in emp table
+const registerEmp = async (req, res) => {
+    try {
+        const payload = req.body;
+
+        let checkEmail = "SELECT * FROM emp WHERE email=?";
+        const data = new Promise((resolve, reject) => {
+            con.query(checkEmail, payload.email, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    // console.log(result);
+                    resolve(result);
+                }
+            })
+        });
+
+        let getEmail = await data;
+        // console.log(getEmail.length);
+        //Check that inseted email is exists or not
+        if (getEmail.length > 0) {
+            //Email is exists
+            res.send({ "status": false, "message": "Email is already exists " });
+        } else {
+            //Email is not Exists then register user
+            let hashPassword = await bcrypt.hash(req.body.password, 10);
+            // console.log(hashPassword);
+            // const { name, email, password, department, salary } = req.body;
+            const registerUser = `INSERT INTO emp(name, email, password, department, salary) VALUES (?,?,?,?,?)`;
+            const data = con.query(registerUser, [payload.name, payload.email, hashPassword, payload.department, payload.salary], (err, result) => {
+                if (err) throw err;
+                // console.log(result);
+                if (result.affectedRows == 0) {
+                    res.status(400).send({ "status": 400, "message": "Data not inserted " });
+                } else {
+                    // res.status(200).send({ "status": 200, "message": "Data inserted successfully" });
+                    return success(req, res, "Data inserted successfully", data.values);
+                }
+            });
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+
 //login
 const login = async (req, res) => {
     const payload = req.body;
@@ -138,16 +184,16 @@ const deleteUser = async (req, res) => {
         const payload = req.body;
         // console.log(payload.id);
         // const deleteToken = req.user.id;
-
+        
         const deleteUser = `DELETE FROM emp where email=?`;
         new Promise((resolve, reject) => {
             con.query(deleteUser, payload.email, (err, result) => {
                 if (err) {
-                    res.send("not deleted");
+                    res.send({ status: 403, message: "User is deleted" });
                     reject(err);
                 } else {
                     resolve(result);
-                    res.send({ status: 200, message: "User is deleted" })
+                    res.send({ status: 200, message: "User is deleted" });
                 }
             });
         })
@@ -280,7 +326,8 @@ module.exports = {
     selectFile,
     singleFileUpload,
     uploadMultipleFile,
-    getAllUser
+    getAllUser,
+    registerEmp
 }
 
 // const login = async (req, res) => {
