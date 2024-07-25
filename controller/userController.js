@@ -184,12 +184,27 @@ const deleteUser = async (req, res) => {
         const payload = req.body;
         // console.log(payload.id);
         // const deleteToken = req.user.id;
+
+        // const selectUser = "SELECT * FROM user";
+        // const data = new Promise((resolve, reject) => {
+        //     con.query(selectUser, (err, result) => {
+        //         if(err) {
+        //             reject(err);
+        //         }else{
+        //             resolve();
+        //         }
+        //     });
+        // })
+        
+        // let user = await data;
+        // req.user 
+        // console.log(user); 
         
         const deleteUser = `DELETE FROM emp where email=?`;
         new Promise((resolve, reject) => {
             con.query(deleteUser, payload.email, (err, result) => {
                 if (err) {
-                    res.send({ status: 403, message: "User is deleted" });
+                    res.send({ status: 403, message: "User not Found" });
                     reject(err);
                 } else {
                     resolve(result);
@@ -197,6 +212,7 @@ const deleteUser = async (req, res) => {
                 }
             });
         })
+
     }
     catch (err) {
         console.log(err);
