@@ -73,7 +73,7 @@ const authorizeRole = ([...roles]) => {
       } else {
         console.log("Unauthorized user");
         // res.send({ status: 400, message: "Access denied" });
-        res.status(404).json({status: 404, message: "Unauthorized user"});
+        // res.status(404).json({status: 404, message: "Unauthorized user"});
       }
     }
     // return false;
