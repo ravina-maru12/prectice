@@ -62,24 +62,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });   //image is the filed name
 
-// Middleware for role-based authorization
-// const authorizeRole = ([...roles]) => {
-//   return (req, res, next) => {
-//     //req.user.role => database role
-//     for (let role of roles) {
-//       if (req.user.role === role) {
-//         console.log("Authorized Person");
-//         next();
-//       } else {
-//         console.log("Unauthorized user");
-//         // res.send({ status: 400, message: "Access denied" });
-//         // res.status(404).json({status: 404, message: "Unauthorized user"});
-//       }
-//     }
-//     // return false;
-//   }
-// }
-
 const authorizeRole = (role) => {
   return (req, res, next) => {
     //req.user.role => database role
@@ -98,8 +80,17 @@ const authorizeRole = (role) => {
   }
 }
 
+const logger = (req, res, next) =>{
+  const date = new Date().toString().slice(0, 15);
+  const time = new Date().toString().slice(16, 25);
+  console.log(`Date :- ${date}`);
+  console.log(`Time :- ${time}`);
+  next();
+}
+
 module.exports = {
   verifyUser,
   upload,
-  authorizeRole
+  authorizeRole,
+  logger
 };

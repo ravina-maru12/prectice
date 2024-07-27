@@ -204,15 +204,18 @@ const deleteUser = async (req, res) => {
         new Promise((resolve, reject) => {
             con.query(deleteUser, payload.email, (err, result) => {
                 if (err) {
-                    res.send({ status: 403, message: "User not Found" });
+                    res.send({ status: 403, message: "User not Deleted" });
                     reject(err);
                 } else {
-                    resolve(result);
-                    res.send({ status: 200, message: "User is deleted" });
+                    resolve();
+                    if(result.affectedRows == 0){
+                        res.send({message: "User not Found"});
+                    }else{
+                        res.send({ status: 200, message: "User is deleted", result });
+                    }
                 }
             });
         })
-
     }
     catch (err) {
         console.log(err);
