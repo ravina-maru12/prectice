@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    h1{
+        text-align: center;
+    }
+</style>
+
+<body>
+    <h1>Register here...</h1>
+    <form action="/register" method="post">
+        <table align="center" border="2">
+            <tr>
+                <td>First Name</td>
+                <td><input placeholder="Enter First Name" type="text" name="first_name" required></td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td><input placeholder="Enter Last Name" type="text" name="last_name" required></td>
+            </tr>
+            <tr>
+                <td>City</td>
+                <td><input placeholder="Enter City" type="text" name="city" required></td>
+            </tr>
+            <tr>
+                <td>Phone</td>
+                <td><input placeholder="Enter Phone" type="text" name="phone" required></td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td><input placeholder="Enter Email" type="text" name="email" required></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><input placeholder="Enter Password" type="password" name="password" required></td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td><input placeholder="Enter gender" type="text" name="gender"></td>
+            </tr>
+            <tr>
+                <td>Role</td>
+                <td><input placeholder="Enter role" type="text" name="role"></td>
+            </tr>
+            <tr>
+                <td><input type="submit"></td>
+                <td><a href="/loginForm">Login</a></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

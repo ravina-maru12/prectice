@@ -4,12 +4,14 @@ const router = require("express").Router();
 const { verifyUser, authorizeRole } = require("../middlewear/auth");
 
 router.get("/test", userController.test);
+router.get("/registerUser", userController.registerForm);
 router.post("/register", userController.register);    //for register the user
-router.post("/registerEmp", userController.registerEmp);
+// router.post("/registerEmp", userController.registerEmp);
 router.get("/view", verifyUser, userController.viewUser);
 router.delete("/delete", verifyUser, authorizeRole(['2']), userController.deleteUser);
 router.patch("/update", verifyUser,authorizeRole(['1', '2']), userController.updateUser);
-router.post("/login", userController.login);
+router.post("/login", userController.loginEmp);  //to put check data and login
+router.get("/loginForm", userController.loginForm);  //for login form
 router.post("/logout", verifyUser, userController.logout);
 router.get("/home", userController.selectFile);
 router.post("/upload", userController.singleFileUpload);

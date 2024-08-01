@@ -6,17 +6,20 @@ const { upload } = require("../middlewear/auth");
 const { success } = require("../middlewear/response");
 
 const test = (req, res) => {
-    // console.log("app is running");
-    // console.log(req.user);
-    // res.send({ message: "App is working" });
     return success(req, res, "working", "data");
 }
 
-//insert
+//render registration form
+const registerForm = (req, res) => {
+    res.render("register.ejs");
+}
+
+//For insert data in user table
 const register = async (req, res) => {
     try {
         const payload = req.body;
 
+        //to check that email is exists or not in database
         let checkEmail = "SELECT * FROM user WHERE email=?";
         const data = new Promise((resolve, reject) => {
             con.query(checkEmail, payload.email, (err, result) => {
@@ -28,13 +31,13 @@ const register = async (req, res) => {
                 }
             })
         });
-
+        //to get data using promise
         let getEmail = await data;
-        // console.log(getEmail.length);
-        //Check that inseted email is exists or not
+        //if length is greater than 0 then not inserted otherwise insert the data
         if (getEmail.length > 0) {
             res.send({ "status": false, "message": "Email is already exists " });
         } else {
+            //to generate password using bcrypt. This hash password is compared at the time of login
             let hashPassword = await bcrypt.hash(req.body.password, 10);
             // console.log(hashPassword);
             const { first_name, last_name, city, phone, email, password, gender, role } = req.body;
@@ -56,7 +59,7 @@ const register = async (req, res) => {
     }
 }
 
-//register user in emp table
+//to insert data in emp table
 const registerEmp = async (req, res) => {
     try {
         const payload = req.body;
@@ -102,8 +105,64 @@ const registerEmp = async (req, res) => {
     }
 }
 
+//display login form
+const loginForm = (req, res) => {
+    res.render("login.ejs");
+}
+
 //login
 const login = async (req, res) => {
+    const payload = req.body;
+
+    if (!payload.email || !payload.password) {
+        res.send("email and password is required");
+    }
+    //select data from database using email
+    const q = `SELECT * FROM user where email = ?`;
+    const data = new Promise((resolve, reject) => {
+        con.query(q, payload.email, (err, result) => {
+            if (0 < result.length) {
+                resolve(result[0]);
+            } else {
+                res.status(404).json({ status: 404, message: "This User Is Not Found" });
+            }
+        });
+    })
+    let user = await data;
+
+    //if data is not found
+    if (!data) {
+        res.send({ status: 400, message: "data and password is not exists" });
+    } else {
+        //payload.password ==> database password, user.password ==> password that passed from postman compare both password
+        const checkpassword = await bcrypt.compare(payload.password, user.password);
+
+        if (checkpassword) {
+            const token = generateToken({ user });
+            req.user = user;
+            let updateId = req.user.id;
+            let updateStatus = `UPDATE user SET status = '1' WHERE id = ${updateId}`;
+            new Promise((resolve, reject) => {
+                con.query(updateStatus, (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            })
+            let activeUser = req.user;
+            //Login user's information is stored in cookie
+            res.cookie("accessToken", token).send({ message: "User login successfully", token: token, activeUser });
+
+        } else {
+            res.send("password is incorrect");
+        }
+    }
+}
+
+//loginEmp
+const loginEmp = async (req, res) => {
     const payload = req.body;
 
     if (!payload.email || !payload.password) {
@@ -226,14 +285,7 @@ const deleteUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const payload = req.body;
-        // let token = req.header("Authorization");
-        // console.log(token);
-        // console.log(updatedToken);
 
-        // let d = jwt.decode(updatedToken, "abc111");
-        // let editData = req.user.id;
-        // console.log(editData);
-        // return false;
         let editUser = `UPDATE emp SET name = ? WHERE email = '${req.body.email}'`;
         new Promise((resolve, reject) => {
             con.query(editUser, payload.name, (err, result) => {
@@ -276,7 +328,6 @@ const selectFile = (req, res) => {
 //     let data = await user;
 //     req.user = data;
 //     // console.log(req.user);
-
 // }
 
 //for upload single file using multer
@@ -306,14 +357,7 @@ const uploadMultipleFile = (req, res) => {
     })
 }
 
-// const adminAccess = (req, res) => {
-//     if (req.user.role == req.body.role) {
-//         res.json({ message: 'You have access' });
-//     } else {
-//         res.send("not access");
-//     }
-// }
-
+//to get all user
 const getAllUser = async (req, res) => {
     try {
         let userAccess = "SELECT * FROM emp";
@@ -336,11 +380,14 @@ const getAllUser = async (req, res) => {
 
 module.exports = {
     test,
+    registerForm,
     register,
     viewUser,
     deleteUser,
     updateUser,
+    loginForm,
     login,
+    loginEmp,
     logout,
     selectFile,
     singleFileUpload,

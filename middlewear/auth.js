@@ -3,6 +3,7 @@ const secretKey = 'abc111';
 const con = require("../database/db");
 const multer = require('multer');
 
+//use to verify the user
 const verifyUser = (req, res, next) => {
   try {
     let token = req.header("Authorization");
@@ -23,7 +24,7 @@ const verifyUser = (req, res, next) => {
         const data = new Promise((resolve, reject) => {
           con.query(getUser, decoded.data.user.id, (err, result) => {
             if (err) {
-              reject(err)
+              reject(err);
             } else {
               // console.log(result)
               //if any record is find then condition is true
@@ -67,7 +68,7 @@ const authorizeRole = (role) => {
     //req.user.role => database role
     // console.log(role);
     // console.log(req.user.role);
-    let userRole = req.user.role; 
+    let userRole = req.user.role;
     if (role.includes(userRole)) {
       console.log("Authorized Person");
       next();
@@ -80,9 +81,10 @@ const authorizeRole = (role) => {
   }
 }
 
-const logger = (req, res, next) =>{
-  const date = new Date().toString().slice(0, 15);
-  const time = new Date().toString().slice(16, 25);
+//to print log when any request is sent
+const logger = (req, res, next) => {
+  const date = new Date().toLocaleDateString();
+  const time = new Date().toTimeString();
   console.log(`Date :- ${date}`);
   console.log(`Time :- ${time}`);
   next();
